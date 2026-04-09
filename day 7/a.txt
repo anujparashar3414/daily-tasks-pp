@@ -1,0 +1,8 @@
+"[INFO] server started 
+[INFO] user rahul logged in 
+[ERROR] database connection failed
+[WARNING] high memory usage: 87%
+[ERROR]  file is not found: config.json
+[INFO] user priya logged in
+[ERROR] timeout on request /api/data
+[INFO] backup complete"
