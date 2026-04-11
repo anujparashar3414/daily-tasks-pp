@@ -1,0 +1,243 @@
+# 01 Select with conditions
+mysql> select * from student;
++----+--------+--------+-------+-------+
+| id | name   | city   | marks | grade |
++----+--------+--------+-------+-------+
+|  1 | rahul  | delhi  |    72 | B     |
+|  2 | priya  | mumbai |    91 | A     |
+|  3 | arjun  | delhi  |    65 | C     |
+|  4 | sneha  | pune   |    85 | A     |
+|  5 | vikram | mumbai |    55 | C     |
+|  6 | ankit  | delhi  |    94 | A     |
+|  7 | ajay   | dewas  |    81 | B     |
++----+--------+--------+-------+-------+
+7 rows in set (0.01 sec)
+
+mysql> select * from student where city="delhi" order by marks desc;
++----+-------+-------+-------+-------+
+| id | name  | city  | marks | grade |
++----+-------+-------+-------+-------+
+|  6 | ankit | delhi |    94 | A     |
+|  1 | rahul | delhi |    72 | B     |
+|  3 | arjun | delhi |    65 | C     |
++----+-------+-------+-------+-------+
+3 rows in set (0.01 sec)
+
+mysql> select name,marks from student where marks>80;
++-------+-------+
+| name  | marks |
++-------+-------+
+| priya |    91 |
+| sneha |    85 |
+| ankit |    94 |
+| ajay  |    81 |
++-------+-------+
+4 rows in set (0.00 sec)
+
+mysql> select * from student order by marks desc limt 3;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'limt 3' at line 1
+mysql> select * from student order by marks desc limit 3;
++----+-------+--------+-------+-------+
+| id | name  | city   | marks | grade |
++----+-------+--------+-------+-------+
+|  6 | ankit | delhi  |    94 | A     |
+|  2 | priya | mumbai |    91 | A     |
+|  4 | sneha | pune   |    85 | A     |
++----+-------+--------+-------+-------+
+3 rows in set (0.00 sec)
+
+mysql> select * from student where city in ("mumbai","pune) and marks>=80;
+    "> ;
+    "> ^C
+mysql> select * from student where city in("mumbai","pune") and marks>=80;
++----+-------+--------+-------+-------+
+| id | name  | city   | marks | grade |
++----+-------+--------+-------+-------+
+|  2 | priya | mumbai |    91 | A     |
+|  4 | sneha | pune   |    85 | A     |
++----+-------+--------+-------+-------+
+2 rows in set (0.00 sec)
+--------------------------------------------------------------------------------------------------------------------------
+# 02 Aggregate Function & group by;
+
+mysql> select city,count(city) from student group  by city;
++--------+-------------+
+| city   | count(city) |
++--------+-------------+
+| delhi  |           3 |
+| mumbai |           2 |
+| pune   |           1 |
+| dewas  |           1 |
++--------+-------------+
+4 rows in set (0.01 sec)
+
+mysql> select grade,avg(marks) from student group by grade;
++-------+------------+
+| grade | avg(marks) |
++-------+------------+
+| B     |    76.5000 |
+| A     |    90.0000 |
+| C     |    60.0000 |
++-------+------------+
+3 rows in set (0.01 sec)
+
+mysql> select grade,avg(marks) from student group by grade desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc' at line 1
+mysql> select city,count(city) from student group by city having city>2;
+Empty set, 4 warnings (0.01 sec)
+
+mysql> select city,count(city) from student group by city having count(city)>2;
++-------+-------------+
+| city  | count(city) |
++-------+-------------+
+| delhi |           3 |
++-------+-------------+
+1 row in set (0.01 sec)
+
+mysql> select city max(marks) from student group by city ;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'max(marks) from student group by city' at line 1
+mysql> select city, max(marks) from student group by city ;
++--------+------------+
+| city   | max(marks) |
++--------+------------+
+| delhi  |         94 |
+| mumbai |         91 |
+| pune   |         85 |
+| dewas  |         81 |
++--------+------------+
+4 rows in set (0.00 sec)
+--------------------------------------------------------------------------------------------------------------
+# 03 inner join _ twotables together;
+mysql> select name,course from student inner join enroll on student.id=enroll.student_id;
++-------+--------+
+| name  | course |
++-------+--------+
+| rahul | python |
+| rahul | sql    |
+| priya | python |
+| arjun | java   |
+| sneha | sql    |
+| priya | java   |
++-------+--------+
+6 rows in set (0.00 sec)
+mysql> select name,course,score from student inner join enroll on student.id=enroll.student_id where score>80;
++-------+--------+-------+
+| name  | course | score |
++-------+--------+-------+
+| rahul | python |    88 |
+| priya | python |    95 |
+| sneha | sql    |    81 |
++-------+--------+-------+
+3 rows in set (0.00 sec)
+mysql> select name,count(course) from student inner join enroll on student.id=enroll.student_id group by name;
++-------+---------------+
+| name  | count(course) |
++-------+---------------+
+| rahul |             2 |
+| priya |             2 |
+| arjun |             1 |
+| sneha |             1 |
++-------+---------------+
+4 rows in set (0.00 sec)
+
+mysql>
+mysql> select name,score from student inner join enroll on student.id=enroll.student_id order by desc;
+ERROR 1064 (42000): You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near 'desc' at line 1
+mysql> select name,score from student inner join enroll on student.id=enroll.student_id order by score desc;
++-------+-------+
+| name  | score |
++-------+-------+
+| priya |    95 |
+| rahul |    88 |
+| sneha |    81 |
+| rahul |    76 |
+| priya |    70 |
+| arjun |    62 |
++-------+-------+
+6 rows in set (0.00 sec)
+# 04 left join _ find student with no course;
+mysql> select s.name,e.course from student s left join enroll e on s.id=e.student_id;
++--------+--------+
+| name   | course |
++--------+--------+
+| rahul  | sql    |
+| rahul  | python |
+| priya  | python |
+| arjun  | java   |
+| sneha  | sql    |
+| vikram | NULL   |
++--------+--------+
+6 rows in set (0.00 sec)
+mysql> select s.name from student s left join enroll e on s.id=e.student_id where e.student_id is null;
++--------+
+| name   |
++--------+
+| vikram |
++--------+
+
+mysql> select s.name,count(e.course) from student s left join  enroll e on s.id=e.student_id where e.student_id is not null group by name;
++-------+-----------------+
+| name  | count(e.course) |
++-------+-----------------+
+| rahul |               2 |
+| priya |               1 |
+| arjun |               1 |
+| sneha |               1 |
++-------+-----------------+
+
+mysql> select s.name,count(e.course) from student s left join  enroll e on s.id=e.student_id group by name;
++--------+-----------------+
+| name   | count(e.course) |
++--------+-----------------+
+| rahul  |               2 |
+| priya  |               1 |
+| arjun  |               1 |
+| sneha  |               1 |
+| vikram |               0 |
++--------+-----------------+
+# 05INSERT UPDATE  & DELETE WRITE OPERATION;
+
+> insert into student values(6,"karan","bangalore",78,"B";
++----+--------+-----------+-------+-------+
+| id | name   | city      | marks | grade |
++----+--------+-----------+-------+-------+
+|  1 | rahul  | delhi     |    72 | B     |
+|  2 | priya  | mumbai    |    91 | A     |
+|  3 | arjun  | delhi     |    38 | F     |
+|  4 | sneha  | pune      |    85 | A     |
+|  5 | vikram | delhi     |    55 | C     |
+|  6 | karan  | bangalore |    78 | B     |
+|  7 | arjun  | pune      |    78 | B     |
++----+--------+-----------+-------+-------+
+> update student set marks=65,grade="C" where name="arjun";
+Query OK, 2 rows affected (0.01 sec)
+Rows matched: 2  Changed: 2  Warnings: 0
+
+mysql> select * from student;
++----+--------+-----------+-------+-------+
+| id | name   | city      | marks | grade |
++----+--------+-----------+-------+-------+
+|  1 | rahul  | delhi     |    72 | B     |
+|  2 | priya  | mumbai    |    91 | A     |
+|  3 | arjun  | delhi     |    65 | C     |
+|  4 | sneha  | pune      |    85 | A     |
+|  5 | vikram | delhi     |    55 | C     |
+|  6 | karan  | bangalore |    78 | B     |
+|  7 | arjun  | pune      |    65 | C     |
++----+--------+-----------+-------+-------+
+7 rows in set (0.00 sec)
+delete from student where grade="F";
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> select * from student;
++----+--------+-----------+-------+-------+
+| id | name   | city      | marks | grade |
++----+--------+-----------+-------+-------+
+|  1 | rahul  | delhi     |    72 | B     |
+|  2 | priya  | mumbai    |    91 | A     |
+|  3 | arjun  | delhi     |    65 | C     |
+|  4 | sneha  | pune      |    85 | A     |
+|  5 | vikram | delhi     |    55 | C     |
+|  6 | karan  | bangalore |    78 | B     |
+|  7 | arjun  | pune      |    65 | C     |
++----+--------+-----------+-------+-------+
