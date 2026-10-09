@@ -78,9 +78,9 @@ An examination application using Java, MySQL, HTML, CSS, and JavaScript.
 
 ## 🤝 Connect With Me
 
-* GitHub: [My GitHub Profile](https://github.com/YOUR-USERNAME)
-* LinkedIn: Add your LinkedIn profile URL
-* Email: Add your professional email address
+* GitHub: https://github.com/anujparashar3414
+* LinkedIn:- (https://www.linkedin.com/in/anuj-parashar-698750399)
+* Email: anujparashar39@gmail.com
 
 ---
 
